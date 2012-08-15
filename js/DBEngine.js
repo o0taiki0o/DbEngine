@@ -17,6 +17,7 @@ function DbNameManager(){
 
 var DbE = (function() {
     var dbNameManager = undefined;
+    
     function initNameManager() {
         dbNameManager = new DbNameManager();
     }

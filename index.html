@@ -9,38 +9,15 @@ and open the template in the editor.
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/SimpleJavascriptInheritance.js"></script>
-        <!--        <script type="text/javascript" src="js/DBInput.js"></script>
-                <script type="text/javascript" src="js/DBEngine.js"></script>-->
+        <script type="text/javascript" src="js/DBInput.js"></script>
+        <script type="text/javascript" src="js/DBEngine.js"></script>
         <script type="text/javascript">
-            var Person = Class.extend((function(){
-                var _name = "Person";
-                var _id = 0;
-                return {
-                    init: function(name,id){
-                        _name = name;
-                        _id = id;
-                    },
-                    alert: function() {
-                        alert(_name);
-                    },
-                    info: function(){
-                        alert(_name + "\n"+ _id);
-                    }
-                }
-            })());
-            var Student = Person.extend({
-                init: function(name, id){
-                    this._super(name,id);
-                },
-                alert: function() {
-                    this._super();
-                },
-                info: function(){
-                    this._super();
-                }
-            });
-            new Person("abc",1).info();
-            new Student("test",2).info();
+            DbE.startUp();
+            var entity = DbE.allocateEntity();
+            entity.initialize("hero");
+            
+            console.log(DbE.getNameManager().lookUp("hero"));
+            console.log(DbE.getNameManager().lookUp("test"));
         </script>
     </head>
     <body>
