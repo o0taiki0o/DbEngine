@@ -14,6 +14,7 @@ var b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 
 //
+var debug;
 var canvas;
 var stage;
 var screen_width;
@@ -23,7 +24,7 @@ var imgMonsterARun = new Image();
 
 function init() {
     canvas = document.getElementById("canvas");
-
+    debug = document.getElementById("debug");
     world = new b2World(new b2Vec2(0, 10), true);
 
     var fixDef = new b2FixtureDef;
@@ -81,7 +82,7 @@ function init() {
     world.SetContactListener(listener);
 
     var debugDraw = new b2DebugDraw();
-    debugDraw.SetSprite(canvas.getContext("2d"));
+    debugDraw.SetSprite(debug.getContext("2d"));
     debugDraw.SetDrawScale(30.0);
     debugDraw.SetFillAlpha(0.3);
     debugDraw.SetLineThickness(1.0);
@@ -118,7 +119,7 @@ function startGame() {
             regY: 32
         },
         animations: {
-            walk: [0, 9, "walk"]
+            walk: [0, 9, "walk",8]
         }
     });
     // create a BitmapAnimation instance to display and play back the sprite sheet:
@@ -130,7 +131,7 @@ function startGame() {
     bmpAnimation.shadow = new Shadow("#454", 0, 5, 4);
     bmpAnimation.name = "monster1";
     bmpAnimation.direction = 90;
-    bmpAnimation.vX = 4;
+    bmpAnimation.vX = 1;
     bmpAnimation.x = 16;
     bmpAnimation.y = 32;
     // have each monster start at a specific frame

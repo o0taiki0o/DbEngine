@@ -50,8 +50,8 @@ function DbComponent(b) {
 DbComponent.prototype = {
     constructor: DbComponent,
     alert: function() {
-        alert(this.a);
+        //alert(this.a);
     }
 }
 
-new DbComponent(6).alert();
+//new DbComponent(6).alert();

@@ -1551,6 +1551,7 @@ Box2D.postDefs = [];
          }
       }
    }
+   
    b2DynamicTree.prototype.RayCast = function (callback, input) {
       if (this.m_root == null) return;
       var p1 = input.p1;
