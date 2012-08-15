@@ -1,35 +1,37 @@
-//var DBE = (function() {
-//    var name = "";
-//    
-//    return {
-//        method: function() {
-//            
-//        }
-//    }
-//})();
-
-var DbNameManager = (function(){
+function DbNameManager(){
     var entities = {};
     return {
         add: function(object) {
-            if(!object.name) console.log("Object must have a name.");
-            if(entities[object.name]) console.log("Object must have a unique name.");
+            if(!object.name) console.error("Object must have a name.");
+            if(entities[object.name]) console.error("Object must have a unique name.");
             entities[object.name] = object;
         },
         remove: function(object) {
             delete entities[object.name];
         },
-        lookup: function(name) {
+        lookUp: function(name) {
             return entities[name];
         }
     }
-})();
+}
 
-var DbE = (function() {    
+var DbE = (function() {
+    var dbNameManager = undefined;
+    function initNameManager() {
+        dbNameManager = new DbNameManager();
+    }
     return {
-        nameManager: DbNameManager,
+        getNameManager: function() {
+            if(!dbNameManager) {
+                console.error("Name Manager has not been initialized.");
+            }
+            return dbNameManager;
+        },
         allocateEntity: function() {
             return new DbEntity();
+        },
+        startUp: function() {
+            initNameManager();
         }
     }
 })();
@@ -37,21 +39,15 @@ var DbE = (function() {
 function DbEntity() {
     var components = {};
     return {
-        name: ""
-    }
-    
+        name: "",
+        initialize: function(name) {
+            this.name = name;
+            DbE.getNameManager().add(this);            
+        }
+    }    
 }
 
 function DbComponent(b) {
     var a = b;
     alert(a);
 }
-
-DbComponent.prototype = {
-    constructor: DbComponent,
-    alert: function() {
-        //alert(this.a);
-    }
-}
-
-//new DbComponent(6).alert();
