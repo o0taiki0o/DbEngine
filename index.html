@@ -7,17 +7,12 @@ and open the template in the editor.
     <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="js/common.js"></script>
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/SimpleJavascriptInheritance.js"></script>
         <script type="text/javascript" src="js/DBInput.js"></script>
         <script type="text/javascript" src="js/DBEngine.js"></script>
         <script type="text/javascript">
-            DbE.startUp();
-            var entity = DbE.allocateEntity();
-            entity.initialize("hero");
-            
-            console.log(DbE.getNameManager().lookUp("hero"));
-            console.log(DbE.getNameManager().lookUp("test"));
         </script>
     </head>
     <body>
