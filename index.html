@@ -10,9 +10,36 @@ and open the template in the editor.
         <script type="text/javascript" src="js/common.js"></script>
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/SimpleJavascriptInheritance.js"></script>
-        <script type="text/javascript" src="js/DBInput.js"></script>
-        <script type="text/javascript" src="js/DBEngine.js"></script>
+<!--        <script type="text/javascript" src="js/DBInput.js"></script>
+        <script type="text/javascript" src="js/DBEngine.js"></script>-->
         <script type="text/javascript">
+            var Person = Class.extend({
+                init: function(isDancing){
+                    this.dancing = isDancing;
+                },
+                onDance: function() {
+                    alert("People");
+                },
+                dance: function(){
+                    this.onDance();
+                    return this.dancing;
+                }
+            });
+
+            var Ninja = Person.extend({
+                init: function(){
+                    this._super( false );
+                },
+                swingSword: function(){
+                    return true;
+                },
+                onDance: function() {
+                    alert("Ninja");
+                }
+            });
+
+            var n = new Ninja();
+            n.dance();
         </script>
     </head>
     <body>
