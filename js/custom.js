@@ -25,8 +25,9 @@ var imgMonsterARun = new Image();
 function init() {
     canvas = document.getElementById("canvas");
     debug = document.getElementById("debug");
-    world = new b2World(new b2Vec2(0, 10), true);
-
+    world = new b2World(new b2Vec2(0, 10), false);
+    screen_width = canvas.width;
+    screen_height = canvas.height;
     var fixDef = new b2FixtureDef;
     fixDef.density = 1.0;
     fixDef.friction = 0.5;
@@ -89,11 +90,10 @@ function init() {
     debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
     world.SetDebugDraw(debugDraw);
 
-    window.setInterval(update, 1000 / 60);
     
     canvas = document.getElementById("canvas");
     imgMonsterARun.onload = handleImageLoad;
-//    imgMonsterARun.onerror = handleImageError;
+    //    imgMonsterARun.onerror = handleImageError;
     imgMonsterARun.src = "img/MonsterARun.png"; 
 }
 
@@ -119,7 +119,9 @@ function startGame() {
             regY: 32
         },
         animations: {
-            walk: [0, 9, "walk",8]
+            walk: [0, 9, "walk",8],
+            idle: [0, 0, "idle",4],
+            dash: [1,1,"dash",4]
         }
     });
     // create a BitmapAnimation instance to display and play back the sprite sheet:
@@ -134,6 +136,7 @@ function startGame() {
     bmpAnimation.vX = 1;
     bmpAnimation.x = 16;
     bmpAnimation.y = 32;
+    SpriteSheetUtils.addFlippedFrames(spriteSheet, true, false, false);
     // have each monster start at a specific frame
     bmpAnimation.currentFrame = 0;
     stage.addChild(bmpAnimation);
@@ -143,51 +146,72 @@ function startGame() {
     Ticker.useRAF = true;
     // Best Framerate targeted (60 FPS)
     Ticker.setFPS(60);
+    window.setInterval(update, 1000 / 60);
 } 
 
 function tick() {
     // Hit testing the screen width, otherwise our sprite would disappear
-    if (bmpAnimation.x >= screen_width - 16) {
-        // We've reached the right side of our screen
-        // We need to walk left now to go back to our initial position
-        bmpAnimation.direction = -90;
-    }
 
-    if (bmpAnimation.x < 16) {
-        // We've reached the left side of our screen
-        // We need to walk right now
-        bmpAnimation.direction = 90;
-    }
-
-    // Moving the sprite based on the direction & the speed
-    if (bmpAnimation.direction == 90) {
-        bmpAnimation.x += bmpAnimation.vX;
-    }
-    else {
-        bmpAnimation.x -= bmpAnimation.vX;
-    }
-
-    // update the stage:
     stage.update();
 }
 
+var currentAnimation = "";
+var facing = "right";
+var dashable = true;
 function update() {
+    var animation = currentAnimation;
+    if(character.GetLinearVelocity().x == 0 && character.GetLinearVelocity().y == 0){
+        animation = facing == "right" ? "idle_h" : "idle";
+    }
     if(keys[37] || keys[65]) {
-        var speed = -50;
-        if(!onground) speed = -20;
-        character.ApplyForce(new b2Vec2(speed,0), character.GetWorldCenter());
+        if((character.GetPosition().x*30) < 16 ){
+            character.SetLinearVelocity(new b2Vec2(0, character.GetLinearVelocity().y));
+        }else {
+            character.SetLinearVelocity(new b2Vec2(-2, character.GetLinearVelocity().y));
+        }
+        //        character.ApplyForce(new b2Vec2(speed,0), character.GetWorldCenter());
+        animation = "walk";
+        facing = "left";
     }
+    
     if(keys[39] || keys[68]) {
-        var speed = 50;
-        if(!onground) speed = 20;
-        character.ApplyForce(new b2Vec2(speed,0), character.GetWorldCenter());
+        if((character.GetPosition().x*30) >= screen_width - 16 ){
+            character.SetLinearVelocity(new b2Vec2(0, character.GetLinearVelocity().y));
+        }else {
+            character.SetLinearVelocity(new b2Vec2(2, character.GetLinearVelocity().y));
+        }
+        //        character.ApplyForce(new b2Vec2(speed,0), character.GetWorldCenter());
+        animation = "walk_h";
+        facing = "right";
     }
+    
     if(keys[32] && onground) {
         character.ApplyImpulse(new b2Vec2(0, -9), character.GetWorldCenter());
+        animation = facing == "right" ? "walk_h" : "walk";
     }
+    if(keys[90] && onground && dashable){
+        character.SetPosition(new b2Vec2(facing == "right" ? character.GetPosition().x+0.1 : character.GetPosition().x-0.1 ,character.GetPosition().y));
+        animation = facing == "right" ? "dash_h" : "dash";
+    }
+    if(animation == "dash" || animation == "dash_h"){
+        dashable = false;
+    }else{
+        dashable = true;
+    }
+    if(animation != currentAnimation){
+        runAnimation(animation);
+    }
+    
+    bmpAnimation.x = character.GetPosition().x * 30;
+    bmpAnimation.y = character.GetPosition().y * 30;
+    
     world.Step(1/60, 10, 10);
     world.DrawDebugData();
     world.ClearForces();
+}
+function runAnimation(e){
+    bmpAnimation.gotoAndPlay(e);
+    currentAnimation = e;
 }
 
 $(function() {
@@ -195,6 +219,7 @@ $(function() {
 
     $(document).keydown(function(e) {
         keys[e.which] = true;
+        console.log(keys);
     });
 
     $(document).keyup(function(e) {
