@@ -7,40 +7,39 @@ and open the template in the editor.
     <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="js/common.js"></script>
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/SimpleJavascriptInheritance.js"></script>
-        <!--        <script type="text/javascript" src="js/DBInput.js"></script>
-                <script type="text/javascript" src="js/DBEngine.js"></script>-->
+<!--        <script type="text/javascript" src="js/DBInput.js"></script>
+        <script type="text/javascript" src="js/DBEngine.js"></script>-->
         <script type="text/javascript">
-            var Person = Class.extend((function(){
-                var _name = "Person";
-                var _id = 0;
-                return {
-                    init: function(name,id){
-                        _name = name;
-                        _id = id;
-                    },
-                    alert: function() {
-                        alert(_name);
-                    },
-                    info: function(){
-                        alert(_name + "\n"+ _id);
-                    }
-                }
-            })());
-            var Student = Person.extend({
-                init: function(name, id){
-                    this._super(name,id);
+            var Person = Class.extend({
+                init: function(isDancing){
+                    this.dancing = isDancing;
                 },
-                alert: function() {
-                    this._super();
+                onDance: function() {
+                    alert("People");
                 },
-                info: function(){
-                    this._super();
+                dance: function(){
+                    this.onDance();
+                    return this.dancing;
                 }
             });
-            new Person("abc",1).info();
-            new Student("test",2).info();
+
+            var Ninja = Person.extend({
+                init: function(){
+                    this._super( false );
+                },
+                swingSword: function(){
+                    return true;
+                },
+                onDance: function() {
+                    alert("Ninja");
+                }
+            });
+
+            var n = new Ninja();
+            n.dance();
         </script>
     </head>
     <body>
