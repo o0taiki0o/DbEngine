@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<level>
+    <completeShape>
+        <xprop>800.5000</xprop>
+        <yprop>360.0000</yprop>
+        <height>50.00</height>
+        <width>1591.00</width>
+        <rotation>0.0000</rotation>
+        <isDynamic>false</isDynamic>
+        <shape>SQUARE</shape>
+        <physicsandID>0.5,0.5,0.5,'iq'</physicsandID>
+        <verts>'()'</verts>
+    </completeShape>
+
+</level>

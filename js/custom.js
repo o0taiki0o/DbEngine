@@ -21,10 +21,23 @@ var screen_width;
 var screen_height;
 var bmpAnimation;
 var imgMonsterARun = new Image();
+var background;
+function loadBG(){
+    var img = new Image();
+    img.src = "img/bg.png"; 
+    background = new Bitmap(img);
+    background.x = 0;
+    background.y = 0;
+    stage.addChild(background);
+    stage.update();
+}
 
 function init() {
     canvas = document.getElementById("canvas");
     debug = document.getElementById("debug");
+    // create a new stage and point it at our canvas:
+    stage = new Stage(canvas);
+    loadBG();
     world = new b2World(new b2Vec2(0, 10), false);
     screen_width = canvas.width;
     screen_height = canvas.height;
@@ -36,11 +49,19 @@ function init() {
     var bodyDef = new b2BodyDef;
 
     //create ground
+//    bodyDef.type = b2Body.b2_staticBody;
+//    bodyDef.position.x = 12;
+//    bodyDef.position.y = 11;
+//    fixDef.shape = new b2PolygonShape;
+//    fixDef.shape.SetAsBox(1, 1);
+//    world.CreateBody(bodyDef).CreateFixture(fixDef);
+    
+    //create ground
     bodyDef.type = b2Body.b2_staticBody;
-    bodyDef.position.x = 9;
-    bodyDef.position.y = 13;
+    bodyDef.position.x = 0;
+    bodyDef.position.y = 12.5;
     fixDef.shape = new b2PolygonShape;
-    fixDef.shape.SetAsBox(1000, 0.5);
+    fixDef.shape.SetAsBox(20, 1);
     world.CreateBody(bodyDef).CreateFixture(fixDef);
 
     //create hero
@@ -55,6 +76,7 @@ function init() {
     bodyDef.fixedRotation =true;
     character = world.CreateBody(bodyDef);
     character.CreateFixture(fixDef);
+    
     //hero sensor
     var fixDef2 = new b2FixtureDef;
     var ground_sensor = new b2PolygonShape;
@@ -102,8 +124,6 @@ function handleImageLoad(e) {
 } 
 
 function startGame() {
-    // create a new stage and point it at our canvas:
-    stage = new Stage(canvas);
     // grab canvas width and height for later calculations:
     screen_width = canvas.width;
     screen_height = canvas.height;
@@ -140,6 +160,7 @@ function startGame() {
     // have each monster start at a specific frame
     bmpAnimation.currentFrame = 0;
     stage.addChild(bmpAnimation);
+
     // we want to do some work before we update the canvas,
     // otherwise we could use Ticker.addListener(stage);
     Ticker.addListener(window);
@@ -151,13 +172,13 @@ function startGame() {
 
 function tick() {
     // Hit testing the screen width, otherwise our sprite would disappear
-
     stage.update();
 }
 
 var currentAnimation = "";
 var facing = "right";
-var dashable = true;
+
+var dashcount = 0;
 function update() {
     var animation = currentAnimation;
     if(character.GetLinearVelocity().x == 0 && character.GetLinearVelocity().y == 0){
@@ -189,15 +210,15 @@ function update() {
         character.ApplyImpulse(new b2Vec2(0, -9), character.GetWorldCenter());
         animation = facing == "right" ? "walk_h" : "walk";
     }
-    if(keys[90] && onground && dashable){
-        character.SetPosition(new b2Vec2(facing == "right" ? character.GetPosition().x+0.1 : character.GetPosition().x-0.1 ,character.GetPosition().y));
+   
+    if(keys[90] && onground && dashcount < 30){
+//      character.ApplyImpulse(new b2Vec2(facing == "right" ? 10 : -10, 0), character.GetWorldCenter());
+        character.SetPosition(new b2Vec2(facing == "right" ? character.GetPosition().x+2 : character.GetPosition().x-2 ,character.GetPosition().y));
         animation = facing == "right" ? "dash_h" : "dash";
+//      dashable = false;
+        dashcount++;
     }
-    if(animation == "dash" || animation == "dash_h"){
-        dashable = false;
-    }else{
-        dashable = true;
-    }
+    
     if(animation != currentAnimation){
         runAnimation(animation);
     }
@@ -205,9 +226,13 @@ function update() {
     bmpAnimation.x = character.GetPosition().x * 30;
     bmpAnimation.y = character.GetPosition().y * 30;
     
-    world.Step(1/60, 10, 10);
+    world.Step(1/60, 8, 3);
     world.DrawDebugData();
     world.ClearForces();
+    if(dashcount >= 30 && (currentAnimation != "dash" || currentAnimation != "dash_h")){
+        dashcount = 0;
+    }
+//    background.x = bmpAnimation.x;
 }
 function runAnimation(e){
     bmpAnimation.gotoAndPlay(e);
@@ -226,3 +251,4 @@ $(function() {
         delete keys[e.which];
     })
 });
+

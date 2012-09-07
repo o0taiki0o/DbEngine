@@ -36,7 +36,37 @@ var DbE = (function() {
         }
     }
 })();
-
+var DbObject = klass(function DbObject(){
+    _public(nodeInSet, nodeOutOfSet, getOwningGroup, setOwningGroup);
+    _private(name, alias,owningGroup,sets);
+    var name = "";
+    var alias = "";
+    var owningGroup = null;
+    var sets = [];
+    var nodeInSet = function(set){
+        if(sets.indexOf(set) != -1)
+            return;
+        sets.push(set);
+    };
+    var nodeOutOfSet = function(s) {
+        var idx = sets.indexOf(s);
+        if(idx == -1) {
+            throw new Error("Removed object from set that it isn't in.");
+        }
+        sets.splice(idx, 1);
+    };
+    var getOwningGroup = function() {
+        return owningGroup;
+    };
+    var setOwningGroup = function(group) {
+        if(!group)
+            throw new Error("Must always be in a group - cannot set owningGroup to null!");
+        if(owningGroup)
+            owningGroup.removeFromGroup(this);
+        owningGroup = group;
+        owningGroup.addToGroup(this);
+    };
+});
 var DbObject = Class.extend((function() {
     var name = "";
     var alias = "";
@@ -48,8 +78,8 @@ var DbObject = Class.extend((function() {
                 return;
             sets.push(set);
         },
-        nodeOutOfSet: function(set) {
-            var idx = _sets.indexOf(s);
+        nodeOutOfSet: function(sets) {
+            var idx = sets.indexOf(s);
             if(idx == -1) {
                 throw new Error("Removed object from set that it isn't in.");
             }

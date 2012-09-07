@@ -1,0 +1,43 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/easeljs-0.4.2.min.js"></script>
+        <script type="text/javascript" src="js/Box2dWeb-2.1.a.3.js"></script>
+        <script type="text/javascript" src="js/demoClass.js"></script>
+        <script type="text/javascript">
+            var stooge = {
+                "first-name":"Jerome",
+                "last-name":"Howards",
+                first_name : "Ta",
+                last_name : "Duy Anh",
+                "subjects": {
+                    "year1" : ["math", "literature"],
+                    "year2" : "code"
+                },
+                "mark" : {
+                    "math" : 9,
+                    "literature" : 3.4,
+                    "game" : -9.9,
+                    "music" : 8.9e-2
+                }
+            }
+            stooge['first-name'] = "Jer";
+            stooge.middle_name = "Test";
+//            alert(stooge["first-name"] + stooge.middle_name);
+            alert(stooge.mark.music);
+        </script>
+
+
+    </head>
+    <body>
+        <button onclick ="start_test();">Start</button>
+        <button onclick ="stop_test();">Stop</button>
+    </body>
+</html>
